@@ -135,16 +135,46 @@ def matching():
             if any(potential_match_id == str(pref['user_id']) for pref in current_user_preferences):
                 # Check if the match also has the current user in their preferences
                 if any(str(current_user_data['_id']) == str(pref['user_id']) for pref in potential_match.get('preferences', [])):
+                    sum_of_indices = sum(pref['index'] for pref in current_user_preferences if pref['user_id'] == potential_match_id)
+
                     perfect_matches.append({
                         'user_id': str(current_user_data['_id']),
                         'user_id2': potential_match_id,
                         'name': current_user_data['name'],
                         'surname': current_user_data['surname'],
                         'matched_name': potential_match['name'],
-                        'matched_surname': potential_match['surname']
-                    })
+                        'matched_surname': potential_match['surname'],
+                        'sum_of_indices': sum_of_indices
 
-    return render_template('matching.html', perfect_matches=perfect_matches)
+                    })
+        perfect_matches = sorted(perfect_matches, key=lambda x: x['sum_of_indices'], reverse=True)
+            # Create a set to keep track of users
+        unique_users = set()
+
+    # List to store final unique matches
+        unique_matches = []
+
+
+
+        for match in perfect_matches:
+            if match['user_id'] not in unique_users and match['user_id2'] not in unique_users:
+            # If both users are not in the set, add the match to the final list
+                unique_matches.append(match)
+
+            # Add both users to the set
+                unique_users.add(match['user_id'])
+                unique_users.add(match['user_id2'])
+        
+        unmatched_users = [
+        {'user_id': str(user['_id']), 'name': user['name'], 'surname': user['surname']}
+        for user in all_users
+        if str(user['_id']) not in unique_users
+    ]
+        print(unmatched_users)
+
+
+
+    return render_template('matching.html', perfect_matches=unique_matches)
 
 
 
