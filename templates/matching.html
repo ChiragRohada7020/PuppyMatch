@@ -1,0 +1,26 @@
+<!-- perfect_matches.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perfect Matches</title>
+</head>
+<body>
+    <h2>Perfect Matches</h2>
+    {% if perfect_matches %}
+        <ul>
+            {% for match in perfect_matches %}
+                <li>
+                    {{ match.name }} {{ match.surname }} (User ID: {{ match.user_id }})
+                    <br>
+                    Perfectly Matched with {{ match.matched_name }} {{ match.matched_surname }} (User ID: {{ match.matched_user_id }})
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No perfect matches found.</p>
+    {% endif %}
+</body>
+</html>
