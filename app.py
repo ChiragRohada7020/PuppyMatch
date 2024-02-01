@@ -1,10 +1,22 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, session
+from flask_mail import Mail, Message
+import random
 from pymongo import MongoClient
 from bson import ObjectId
+from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import LoginManager, UserMixin, login_user, login_required, current_user, logout_user
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'your_secret_key'
+app.config['SECRET_KEY'] = '12345'
+
+# Flask-Mail configuration
+app.config['MAIL_SERVER'] = 'smtp.gmail.com'
+app.config['MAIL_PORT'] = 465
+app.config['MAIL_USE_SSL'] = True
+app.config['MAIL_USERNAME'] = 'info.puppymatch@gmail.com'  # Enter your Gmail email address
+app.config['MAIL_PASSWORD'] = 'icbi xxir gtmj lset'  # Enter your Gmail password
+
+mail = Mail(app)
 
 # Connect to MongoDB
 client = MongoClient('mongodb+srv://ChiragRohada:s54icYoW4045LhAW@atlascluster.t7vxr4g.mongodb.net/test')
@@ -28,39 +40,99 @@ def load_user(user_id):
 
 @app.route('/')
 def index():
-    return render_template('register.html')
+    return render_template('index.html')
 
-@app.route('/register', methods=['POST'])
+@app.route('/register', methods=['POST','GET'])
 def register():
-    name = request.form.get('name')
-    surname = request.form.get('surname')
-    gender = request.form.get('gender')
-    email = request.form.get('email')
+    if request.method=="POST":
+        name = request.form.get('name')
+        surname = request.form.get('surname')
+        gender = request.form.get('gender')
+        email = request.form.get('email')
+        password = request.form.get('password')
+        existing_user = users_collection.find_one({'email': email})
+        if not email.endswith("@somaiya.edu"):
+            return "Registration is only allowed with email addresses ending in @somaiya.edu."
+        if existing_user:
+            return "User with this email already exists. Please login or use a different email."
 
-    # Store data in MongoDB
-    user_data = {
+
+    # Generate a random 6-digit OTP
+        otp = ''.join(str(random.randint(0, 9)) for _ in range(6))
+
+    # Store registration details in the session for OTP verification later
+        session['registration_details'] = {
         'name': name,
         'surname': surname,
         'gender': gender,
-        'email': email
-    }
+        'email': email,
+        'password': password  # Store plaintext password (will be hashed during OTP verification)
+        }
 
-    users_collection.insert_one(user_data)
+    # Store the OTP in the session for verification later
+        session['otp'] = otp
 
-    return redirect(url_for('login'))
+    # Send the OTP to the user's email
+        msg = Message('OTP Verification', sender='your_email@gmail.com', recipients=[email])
+        msg.body = f'Your OTP for registration is: {otp}'
+        mail.send(msg)
+    
+    else:
+        return render_template('register.html')
+
+
+    # Render a page to enter and verify the OTP
+    return render_template('verify_otp.html', email=email)
+
+@app.route('/verify_registration_otp/<email>', methods=['POST'])
+def verify_registration_otp(email):
+    entered_otp = request.form.get('otp')
+
+    # Retrieve the stored registration details from the session
+    registration_details = session.get('registration_details')
+    stored_otp = session.get('otp')
+
+    if stored_otp and entered_otp == stored_otp and registration_details:
+        # OTP is correct, proceed with user registration
+        hashed_password = generate_password_hash(registration_details['password'], method='pbkdf2:sha256', salt_length=8)
+
+        # Store data in MongoDB
+        user_data = {
+            'name': registration_details['name'],
+            'surname': registration_details['surname'],
+            'gender': registration_details['gender'],
+            'email': email,
+            'password': hashed_password
+        }
+
+        users_collection.insert_one(user_data)
+
+        # Clear the session after successful registration
+        session.pop('registration_details', None)
+        session.pop('otp', None)
+
+        return redirect(url_for('login'))
+    else:
+        return "Invalid OTP. Please try again."
+
+# ... (remaining code, including select_preferences and matching routes)
+
+
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
         email = request.form.get('email')
+        password = request.form.get('password')
+
         user_data = users_collection.find_one({'email': email})
-        if user_data:
+        if user_data and check_password_hash(user_data['password'], password):
             user = User()
             user.id = str(user_data['_id'])
             login_user(user)
-            return redirect(url_for('select_preferences', gender=user_data['gender']))
+            return redirect(url_for('select_preferences'))
         else:
-            return "User not found. Please register first."
+            return "Invalid email or password. Please try again."
 
     return render_template('login.html')
 
@@ -73,9 +145,9 @@ def logout():
 
 # Import necessary modules
 
-@app.route('/select_preferences/<gender>', methods=['GET', 'POST'])
+@app.route('/select_preferences', methods=['GET', 'POST'])
 @login_required
-def select_preferences(gender):
+def select_preferences():
     if request.method == 'POST':
         selected_user_id = request.form.get('selected_user')
         current_user_data = users_collection.find_one({'_id': ObjectId(current_user.id)})
@@ -90,12 +162,25 @@ def select_preferences(gender):
                 {'_id': ObjectId(current_user.id)},
                 {'$push': {'preferences': {'user_id': selected_user_id, 'index': new_index}}}
             )
+    current_user_data = users_collection.find_one({'_id': ObjectId(current_user.id)})
+    gender=current_user_data["gender"]
 
     # Show users with the opposite gender
     opposite_gender = 'male' if gender == 'female' else 'female'
     users = users_collection.find({'gender': opposite_gender})
 
     return render_template('user_list.html', users=users, current_gender=gender)
+
+@app.route('/user_preferences')
+@login_required
+def user_preferences():
+    # Get the current user's data from the database
+    current_user_data = users_collection.find_one({'_id': ObjectId(current_user.id)})
+
+    # Retrieve the preferences list for the current user
+    preferences = current_user_data.get('preferences', [])
+
+    return render_template('user_preferences.html', preferences=preferences)
 
 
 

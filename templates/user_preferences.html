@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Preferences</title>
+</head>
+<body>
+    <h2>User Preferences</h2>
+
+    {% if preferences %}
+        <ul>
+            {% for preference in preferences %}
+                <li>User ID: {{ preference.user_id }}, Index: {{ preference.index }}</li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No preferences available.</p>
+    {% endif %}
+</body>
+</html>
