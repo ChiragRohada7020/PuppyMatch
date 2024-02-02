@@ -1,29 +1,32 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
-   
+
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
 </head>
+
 <body>
-    <div style="padding: 20px; text-align: center; font-size: x-large;">
+    <!-- <div style="padding: 20px; text-align: center; font-size: x-large;">
         <img src="{{ url_for('static', filename='kjsieit-logo.svg') }}" style="padding: 1px;" height="150px" width="150px"
           alt="" />
-      </div>
-    
-    <section class="flex items-center py-5 bg-stone-100 xl:h-screen font-poppins dark:bg-gray-800 ">
-        <div class="justify-center flex-1 max-w-6xl py-2 mx-auto lg:py-6 md:px-6">
+      </div> -->
+
+    <section class="flex items-center py-2 bg-stone-100 xl:h-screen font-poppins dark:bg-gray-800 ">
+        <div class="justify-center flex-1 max-w-6xl  mx-auto lg:py-6 md:px-6">
             <div class="flex flex-wrap ">
-                <div class="w-full px-4 mb-10 lg:w-1/2 lg:mb-0">
+                <div class="w-full px-4  lg:w-1/2 lg:mb-0">
                     <div class="relative">
-                        <img src="https://static.vecteezy.com/system/resources/previews/009/551/676/non_2x/shy-dog-logo-illustration-depicting-shy-dog-suitable-for-pet-company-free-vector.jpg" alt=""
-                            class="relative z-40 object-cover w-full h-96 lg:rounded-tr-[80px] lg:rounded-bl-[80px] rounded">
+                        <img src="https://static.vecteezy.com/system/resources/previews/009/551/676/non_2x/shy-dog-logo-illustration-depicting-shy-dog-suitable-for-pet-company-free-vector.jpg"
+                            alt=""
+                            class="relative z-40 object-cover w-full h-30 lg:rounded-tr-[80px] lg:rounded-bl-[80px] rounded">
                         <div
                             class="absolute z-10 hidden w-full h-full bg-blue-400 rounded-bl-[80px] rounded -bottom-6 right-6 lg:block">
                         </div>
-                        
+
                     </div>
                 </div>
                 <div class="w-full px-4 mb-10 lg:w-1/2 lg:mb-0 ">
@@ -37,13 +40,25 @@
                         </h1>
                     </div>
                     <p class="mt-6 mb-10 text-base leading-7 text-gray-500 dark:text-gray-400">
-                        Are you ready to experience the magic of love this Valentine's season? Look no further! Our unique matchmaking platform is designed exclusively for KJ Somaiya Students, providing a fun and exciting way to find your perfect match. Whether you're seeking a special someone for a romantic date or a delightful companion for a fun night out, <b>Puppy Match</b> is here to make your heart skip a beat.
+                        Are you ready to experience the magic of love this Valentine's season? Look no further! Our
+                        unique matchmaking platform is designed exclusively for KJ Somaiya Students, providing a fun and
+                        exciting way to find your perfect match. Whether you're seeking a special someone for a romantic
+                        date or a delightful companion for a fun night out, <b>Puppy Match</b> is here to make your
+                        heart skip a beat.
                     </p>
-                    <a href="{{ url_for('register') }}"
-                        class="px-4 py-3 text-gray-50 transition-all transform bg-yellow-900	 rounded-xl hover:bg-yellow-900	 dark:hover:text-gray-100 dark:text-gray-100 ">
-Sign Up                    </a>
+                    <div class="flex gap-5">
+                        <a href="{{ url_for('register') }}"
+                        class="px-4 py-3 text-gray-50 transition-all transform bg-yellow-900	font-bold rounded-xl hover:bg-yellow-900	 dark:hover:text-gray-100 dark:text-gray-100 ">
+                        Sign Up </a>
+                        <a href="{{ url_for('work') }}"
+                        class="px-4 py-3 text-gray-50 transition-all transform bg-blue-500	font-bold rounded-xl hover:bg-blue-900	 dark:hover:text-gray-100 dark:text-gray-100 ">
+How It Works                  </a>
+                    </div>
                 </div>
+
             </div>
         </div>
-    </section></body>
+    </section>
+</body>
+
 </html>

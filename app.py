@@ -52,6 +52,11 @@ def profile():
 
     return render_template('profile.html', current_user_data=current_user_data)
 
+
+@app.route('/work')
+def work():
+    return render_template("work.html")
+
 @app.route('/register', methods=['POST','GET'])
 def register():
     if request.method=="POST":
