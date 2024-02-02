@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, session
 from flask_mail import Mail, Message
 import random
+import os
 from pymongo import MongoClient
 from bson import ObjectId
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -8,6 +9,8 @@ from flask_login import LoginManager, UserMixin, login_user, login_required, cur
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = '12345'
+app.config['UPLOAD_FOLDER'] = 'static/uploads'
+
 
 # Flask-Mail configuration
 app.config['MAIL_SERVER'] = 'smtp.gmail.com'
@@ -42,14 +45,23 @@ def load_user(user_id):
 def index():
     return render_template('index.html')
 
+@app.route('/profile')
+@login_required
+def profile():
+    current_user_data = users_collection.find_one({'_id': ObjectId(current_user.id)})
+
+    return render_template('profile.html', current_user_data=current_user_data)
+
 @app.route('/register', methods=['POST','GET'])
 def register():
     if request.method=="POST":
         name = request.form.get('name')
-        surname = request.form.get('surname')
         gender = request.form.get('gender')
         email = request.form.get('email')
         password = request.form.get('password')
+        InstaId = request.form.get('InstaId')
+        profile_picture = request.files['profile_picture']
+
         existing_user = users_collection.find_one({'email': email})
         if not email.endswith("@somaiya.edu"):
             return "Registration is only allowed with email addresses ending in @somaiya.edu."
@@ -59,14 +71,25 @@ def register():
 
     # Generate a random 6-digit OTP
         otp = ''.join(str(random.randint(0, 9)) for _ in range(6))
+        if profile_picture.filename != '':
+    # Generate a unique filename for the uploaded file
+            _, file_extension = os.path.splitext(profile_picture.filename)
+            unique_filename = f"{email}_profile_picture{file_extension}"
+
+    # Save the file to your desired directory
+            profile_picture.save(os.path.join(app.config['UPLOAD_FOLDER'], unique_filename))
+
+    # Store the unique filename in the user_data dictionary
+            profile_picture = unique_filename
 
     # Store registration details in the session for OTP verification later
         session['registration_details'] = {
         'name': name,
-        'surname': surname,
         'gender': gender,
         'email': email,
-        'password': password  # Store plaintext password (will be hashed during OTP verification)
+        'password': password,
+        "InstaId"  :InstaId ,# Store plaintext password (will be hashed during OTP verification)
+        "profile_picture":profile_picture
         }
 
     # Store the OTP in the session for verification later
@@ -78,7 +101,7 @@ def register():
         mail.send(msg)
     
     else:
-        return render_template('register.html')
+        return render_template('login.html')
 
 
     # Render a page to enter and verify the OTP
@@ -91,19 +114,25 @@ def verify_registration_otp(email):
     # Retrieve the stored registration details from the session
     registration_details = session.get('registration_details')
     stored_otp = session.get('otp')
+    
 
     if stored_otp and entered_otp == stored_otp and registration_details:
         # OTP is correct, proceed with user registration
         hashed_password = generate_password_hash(registration_details['password'], method='pbkdf2:sha256', salt_length=8)
 
-        # Store data in MongoDB
         user_data = {
             'name': registration_details['name'],
-            'surname': registration_details['surname'],
             'gender': registration_details['gender'],
             'email': email,
-            'password': hashed_password
+            'password': hashed_password,
+            'InstaId':registration_details['InstaId'],
+            "profile_picture":registration_details['profile_picture']
         }
+        
+
+
+        # Store data in MongoDB
+
 
         users_collection.insert_one(user_data)
 
@@ -149,8 +178,10 @@ def logout():
 @login_required
 def select_preferences():
     if request.method == 'POST':
+        
         selected_user_id = request.form.get('selected_user')
         current_user_data = users_collection.find_one({'_id': ObjectId(current_user.id)})
+        gender=current_user_data["gender"]
         current_preferences_count = len(current_user_data.get('preferences', []))
 
         if selected_user_id and current_preferences_count < 10:
@@ -265,4 +296,4 @@ def matching():
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=5000, debug=True)

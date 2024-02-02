@@ -1,0 +1,25 @@
+<!-- templates/profile.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile</title>
+    <!-- Include Tailwind CSS stylesheet -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 p-8">
+    <div class="max-w-md mx-auto bg-white rounded-md shadow-md overflow-hidden">
+        <div class="p-6">
+            <h2 class="text-2xl font-semibold mb-4">User Profile</h2>
+            <img src="{{ url_for('static', filename='uploads/' + current_user_data.profile_picture) }}" alt="Profile Picture" class="w-32 h-32 object-cover mb-4 rounded-md">
+            <p><strong>Name:</strong> {{ current_user_data.name }}</p>
+            <p><strong>Email:</strong> {{ current_user_data.email }}</p>
+            <p><strong>Instagram ID:</strong> {{ current_user_data.InstaId }}</p>
+            <!-- Add more fields as needed -->
+        </div>
+    </div>
+</body>
+</html>
