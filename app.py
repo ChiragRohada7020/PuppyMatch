@@ -7,6 +7,7 @@ from bson import ObjectId
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import LoginManager, UserMixin, login_user, login_required, current_user, logout_user
 from waitress import serve
+from flask import render_template_string
 
 
 
@@ -104,10 +105,33 @@ def register():
 
     # Store the OTP in the session for verification later
         session['otp'] = otp
+        html_content = render_template_string("""
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Puppy Match OTP</title>
+            <!-- Your CSS styles go here -->
+        </head>
+        <body>
+            <div class="container">
+                <h2>Puppy Match OTP</h2>
+                <p>Your OTP for Puppy Match verification:</p>
+                <div class="otp-container">
+                    <span class="otp">{{ otp }}</span>
+                </div>
+                <p class="note">Please use this OTP to complete your registration.</p>
+            </div>
+        </body>
+        </html>
+    """, otp=otp)
+
 
     # Send the OTP to the user's email
         msg = Message('OTP Verification', sender='your_email@gmail.com', recipients=[email])
         msg.body = f'Your OTP for registration is: {otp}'
+        msg.html = html_content
         mail.send(msg)
     
     else:
