@@ -463,7 +463,7 @@ def register():
 
 
     # Send the OTP to the user's email
-        msg = Message('OTP Verification', sender='your_email@gmail.com', recipients=[email])
+        msg = Message(subject="Puppy Match", sender='your_email@gmail.com', recipients=[email])
         msg.body = f'Your OTP for registration is: {otp}'
         msg.html = html_content
         mail.send(msg)
