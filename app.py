@@ -216,6 +216,28 @@ def select_preferences():
 
     return render_template('user_list.html', users=users, current_gender=gender)
 
+
+@app.route('/delete_user/<user_id>', methods=['POST'])
+@login_required
+def delete_user(user_id):
+    # Get the current user's data from the database
+    current_user_data = users_collection.find_one({'_id': ObjectId(current_user.id)})
+
+    # Retrieve the preferences list for the current user
+    preferences = current_user_data.get('preferences', [])
+
+    # Remove the specified user_id from the preferences list
+    updated_preferences = [preference for preference in preferences if str(preference.get('user_id')) != user_id]
+
+    # Update the user's preferences in the database
+    users_collection.update_one(
+        {'_id': ObjectId(current_user.id)},
+        {'$set': {'preferences': updated_preferences}}
+    )
+
+    # Redirect back to the select_preferences route after deletion
+    return redirect(url_for('user_preferences'))
+
 @app.route('/user_preferences')
 @login_required
 def user_preferences():
@@ -224,8 +246,24 @@ def user_preferences():
 
     # Retrieve the preferences list for the current user
     preferences = current_user_data.get('preferences', [])
+    print(preferences)
+    
+    # print(preferences)
+    user_details_list = []
+    for preference in preferences:
+        # Extract the user_id from the preference dictionary
+        user_id = preference.get('user_id')
 
-    return render_template('user_preferences.html', preferences=preferences)
+        # Ensure the user_id is of type ObjectId or convert it
+        user_id = ObjectId(user_id)
+
+        # Fetch user details from the database based on the user ID
+        user_details = users_collection.find_one({'_id': user_id})
+
+        # Append user details to the list
+        user_details_list.append(user_details)
+
+    return render_template('user_preferences.html', preferences=user_details_list)
 
 
 

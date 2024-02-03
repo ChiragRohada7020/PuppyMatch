@@ -9,25 +9,61 @@
     <title>Select Preferences</title>
     <!-- Include Tailwind CSS -->
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        nav {
+            background-color: #2d3748;
+        }
+
+        nav a {
+            color: #cbd5e0;
+            transition: color 0.3s;
+        }
+
+        nav a:hover {
+            color: #ffffff;
+        }
+
+        #userList li {
+            border-bottom: 1px solid #e2e2e2;
+        }
+
+        #userList button {
+            transition: background-color 0.3s;
+        }
+
+        #userList button:hover {
+            background-color: #4a4a4a;
+        }
+    </style>
 </head>
 
-<body class="bg-gray-200 text-white min-h-screen flex flex-col">
+<body class="bg-gray-200 text-black min-h-screen flex flex-col">
 
     <!-- Navigation Bar -->
-    <nav class="bg-black p-4">
-        <div class="flex items-center justify-between">
+    <nav class="p-4">
+        <div class="container flex items-center justify-between">
             <div>
-                <span class="text-2xl font-bold">Puppy Match</span>
+                <span class="text-xl font-bold text-white"><span class="">P</span>uppy <span class="">M</span>atch</span>
             </div>
             <div class="flex space-x-4">
-                <a href="{{ url_for('select_preferences') }}" class="hover:text-gray-300">Preferences</a>
-                <a href="#" class="hover:text-gray-300">About Us</a>
-                <a href="{{ url_for('logout') }}" class="hover:text-gray-300">Logout</a>
+                <a href="{{ url_for('select_preferences') }}" class="nav-link hover:text-blue-300 border-b-2 border-yellow-300">Home</a>
+                <a href="{{ url_for('user_preferences') }}" class="nav-link hover:text-blue-300 ">Preferences</a>
+
+=                <a href="{{ url_for('logout') }}" class="hover:text-white">Logout</a>
             </div>
         </div>
     </nav>
 
-    <div class="bg-white p-6 rounded shadow-md  h-full w-full mx-auto my-4">
+    <div class="bg-white p-6 rounded shadow-md mx-auto my-4 container">
 
         <h2 class="text-2xl font-semibold mb-6 text-gray-800">Pick Soulmate</h2>
 
@@ -36,11 +72,12 @@
             <input type="text" id="searchInput" placeholder="Search by name or email"
                    class="px-4 text-black py-2 border rounded-md w-full focus:outline-none focus:ring focus:border-blue-300">
         </div>
-        
+
         <form method="post" action="{{ url_for('select_preferences') }}">
             <ul id="userList">
                 <!-- Users will be dynamically added here -->
             </ul>
+           
         </form>
     </div>
 
@@ -83,10 +120,9 @@
                         <div class="flex items-center gap-4">
                             <img src="/static/uploads/${user.profile_picture}" alt="Profile Picture" class="w-16 h-16 object-cover rounded-full">
                             <div>
-                                 <p class="text-xl font-semibold text-gray-800">${user.name}</p>
-                                  <p class="text-sm text-gray-600">Insta Id :- ${user.InstaId}</p>
+                                 <p class="text-xl font-semibold text-gray-800 capitalize">${user.name}</p>
+                                 <a  href="https://www.instagram.com/${user.InstaId}" class="text-sm text-gray-600">Insta Id :- ${user.InstaId}</a>
                                  <p class="text-sm text-gray-600">${user.email}</p>
-
                             </div>
                         </div>
                         <button type="submit" name="selected_user" value="${user._id}"
