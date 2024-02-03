@@ -30,7 +30,7 @@
 
           <div class="login__box">
             <i class="bx bx-user login__icon"></i>
-            <input type="text" name="email" placeholder="Username" class="login__input" />
+            <input type="text" name="email" placeholder="Somaiya Email" class="login__input" />
           </div>
 
           <div class="login__box">
@@ -39,11 +39,19 @@
           </div>
 
 
-          <button class="login__button" type="submit">Sign In</button>
+          <button class="login__button" type="submit">Sign In</button>            {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+              {% for category, message in messages %}
+                {{ message }}
+              {% endfor %}
+            
+          {% endif %}
+        {% endwith %}
 
           <div>
             <span class="login__account">Don't have an Account?</span>
             <span class="login__toggle" id="sign-up">Sign Up</span>
+
           </div>
         </form>
 

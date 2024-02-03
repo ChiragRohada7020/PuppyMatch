@@ -11,6 +11,8 @@
     {% if preferences %}
         <ul>
             {% for preference in preferences %}
+                <img src="{{ url_for('static', filename='uploads/' +  preference.profile_picture) }}" alt="Profile Picture" class="w-20 h-20 object-cover mb-4 rounded-md">
+
                 <li>User ID: {{ preference.user_id }}, Index: {{ preference.index }}</li>
             {% endfor %}
         </ul>

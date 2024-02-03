@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, session
+from flask import Flask, render_template, request, redirect, url_for, session,flash,jsonify
 from flask_mail import Mail, Message
 import random
 import os
@@ -6,6 +6,7 @@ from pymongo import MongoClient
 from bson import ObjectId
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import LoginManager, UserMixin, login_user, login_required, current_user, logout_user
+
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = '12345'
@@ -69,7 +70,9 @@ def register():
 
         existing_user = users_collection.find_one({'email': email})
         if not email.endswith("@somaiya.edu"):
-            return "Registration is only allowed with email addresses ending in @somaiya.edu."
+            flash("Invalid email domain. Please use a somaiya email address.", 'error')
+            return redirect(url_for('register'))  # Replace with the actual route for registration
+
         if existing_user:
             return "User with this email already exists. Please login or use a different email."
 
@@ -225,6 +228,38 @@ def user_preferences():
 # Import necessary modules
 
 # Import necessary modules
+
+@app.route('/search_users')
+@login_required
+def search_users():
+    query = request.args.get('query', '').lower()
+    print(query)
+    current_user_data = users_collection.find_one({'_id': ObjectId(current_user.id)})
+
+
+    # Fetch users from the database based on the search query
+    users = users_collection.find({
+        'gender': {'$ne': current_user_data.get('gender')},  # Exclude users of the same gender
+        '$or': [
+            {'name': {'$regex': query, '$options': 'i'}},
+            {'surname': {'$regex': query, '$options': 'i'}},
+            {'email': {'$regex': query, '$options': 'i'}}
+        ]
+    })
+    
+    # Convert MongoDB objects to a list of dictionaries
+    users_data = [
+        {'_id': str(user['_id']), 'name': user['name'], 'email': user['email'],'InstaId':user['InstaId'],
+         'profile_picture': user['profile_picture']}
+        for user in users
+    ]
+
+    print(users_data)
+
+    return jsonify(users_data)
+
+
+
 
 @app.route('/matching', methods=['GET'])
 @login_required
