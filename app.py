@@ -189,20 +189,26 @@ def select_preferences():
         
         selected_user_id = request.form.get('selected_user')
         current_user_data = users_collection.find_one({'_id': ObjectId(current_user.id)})
-        gender=current_user_data["gender"]
-        current_preferences_count = len(current_user_data.get('preferences', []))
+        gender = current_user_data["gender"]
+        current_preferences = current_user_data.get('preferences', [])
 
-        if selected_user_id and current_preferences_count < 10:
+        # Check if the selected user is already in the preferences list
+        if selected_user_id in [pref['user_id'] for pref in current_preferences]:
+            print('You have already selected this user as a preference.')
+        elif len(current_preferences) < 10:
             # Increment the index for the new preference
-            new_index = current_preferences_count + 1
+            new_index = len(current_preferences) + 1
 
             # Add the selected user ID to the preferences list with the new index
             users_collection.update_one(
                 {'_id': ObjectId(current_user.id)},
                 {'$push': {'preferences': {'user_id': selected_user_id, 'index': new_index}}}
             )
+        else:
+            print('You have reached the maximum number of preferences (10).')
+
     current_user_data = users_collection.find_one({'_id': ObjectId(current_user.id)})
-    gender=current_user_data["gender"]
+    gender = current_user_data["gender"]
 
     # Show users with the opposite gender
     opposite_gender = 'male' if gender == 'female' else 'female'
@@ -242,7 +248,7 @@ def search_users():
         'gender': {'$ne': current_user_data.get('gender')},  # Exclude users of the same gender
         '$or': [
             {'name': {'$regex': query, '$options': 'i'}},
-            {'surname': {'$regex': query, '$options': 'i'}},
+            {'InstaId': {'$regex': query, '$options': 'i'}},
             {'email': {'$regex': query, '$options': 'i'}}
         ]
     })

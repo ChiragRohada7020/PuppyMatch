@@ -11,83 +11,94 @@
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
 
-<body class="bg-gray-100 flex items-center justify-center">
+<body class="bg-gray-200 text-white min-h-screen flex flex-col">
 
-    <div class="bg-white p-6 rounded shadow-md w-full">
+    <!-- Navigation Bar -->
+    <nav class="bg-black p-4">
+        <div class="flex items-center justify-between">
+            <div>
+                <span class="text-2xl font-bold">Puppy Match</span>
+            </div>
+            <div class="flex space-x-4">
+                <a href="{{ url_for('select_preferences') }}" class="hover:text-gray-300">Preferences</a>
+                <a href="#" class="hover:text-gray-300">About Us</a>
+                <a href="{{ url_for('logout') }}" class="hover:text-gray-300">Logout</a>
+            </div>
+        </div>
+    </nav>
 
-        <h2 class="text-2xl font-semibold mb-6">Select Preferences</h2>
+    <div class="bg-white p-6 rounded shadow-md  h-full w-full mx-auto my-4">
+
+        <h2 class="text-2xl font-semibold mb-6 text-gray-800">Pick Soulmate</h2>
 
         <!-- Search Bar -->
         <div class="mb-6">
             <input type="text" id="searchInput" placeholder="Search by name or email"
-                   class="px-4 py-2 border rounded-md w-full focus:outline-none focus:ring focus:border-blue-300">
+                   class="px-4 text-black py-2 border rounded-md w-full focus:outline-none focus:ring focus:border-blue-300">
         </div>
+        
         <form method="post" action="{{ url_for('select_preferences') }}">
-
-        <ul id="userList">
-            <!-- Users will be dynamically added here -->
-        </ul>
-    </form>
-
-
-            
-
+            <ul id="userList">
+                <!-- Users will be dynamically added here -->
+            </ul>
+        </form>
     </div>
+
     <script>
-       document.addEventListener('DOMContentLoaded', function () {
-    const searchInput = document.getElementById('searchInput');
-    const userList = document.getElementById('userList');
+        document.addEventListener('DOMContentLoaded', function () {
+            const searchInput = document.getElementById('searchInput');
+            const userList = document.getElementById('userList');
 
-    // Fetch all users initially
-    searchUsers('');
+            // Fetch all users initially
+            searchUsers('');
 
-    // Event listener for search input
-    searchInput.addEventListener('input', debounce(function() {
-        searchUsers(searchInput.value.toLowerCase());
-    }, 300));
+            // Event listener for search input
+            searchInput.addEventListener('input', debounce(function() {
+                searchUsers(searchInput.value.toLowerCase());
+            }, 300));
 
-    function debounce(func, delay) {
-        let timeoutId;
-        return function () {
-            clearTimeout(timeoutId);
-            timeoutId = setTimeout(() => func.apply(this, arguments), delay);
-        };
-    }
+            function debounce(func, delay) {
+                let timeoutId;
+                return function () {
+                    clearTimeout(timeoutId);
+                    timeoutId = setTimeout(() => func.apply(this, arguments), delay);
+                };
+            }
 
-    function searchUsers(searchTerm) {
-        // Use AJAX to send the search query to the server
-        fetch(`/search_users?query=${encodeURIComponent(searchTerm)}`)
-            .then(response => response.json())
-            .then(users => updateUsers(users))
-            .catch(error => console.error('Error fetching users:', error));
-    }
+            function searchUsers(searchTerm) {
+                // Use AJAX to send the search query to the server
+                fetch(`/search_users?query=${encodeURIComponent(searchTerm)}`)
+                    .then(response => response.json())
+                    .then(users => updateUsers(users))
+                    .catch(error => console.error('Error fetching users:', error));
+            }
 
-    function updateUsers(users) {
-        userList.innerHTML = '';
+            function updateUsers(users) {
+                userList.innerHTML = '';
 
-        users.forEach(user => {
-            const listItem = document.createElement('li');
-            listItem.classList.add('mb-4', 'border-b', 'border-gray-300', 'py-4', 'flex', 'items-center', 'justify-between');
-            listItem.innerHTML = `
-                <div class="flex items-center gap-4">
-                    <img src="/static/uploads/${user.profile_picture}" alt="Profile Picture" class="w-16 h-16 object-cover rounded-full">
-                    <div>
-                        <p class="text-lg font-semibold">${user.name} ${user.surname}</p>
-                        <p class="text-sm text-gray-600">${user.email}</p>
-                    </div>
-                </div>
-                <button type="submit" name="selected_user" value="${user._id}"
-                        class="bg-black text-white py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:ring focus:border-blue-300">
-                    Select
-                </button>
-            `;
-            userList.appendChild(listItem);
+                users.forEach(user => {
+                    const listItem = document.createElement('li');
+                    listItem.classList.add('mb-4', 'border-b', 'border-gray-300', 'py-4', 'flex', 'items-center', 'justify-between');
+                    listItem.innerHTML = `
+                        <div class="flex items-center gap-4">
+                            <img src="/static/uploads/${user.profile_picture}" alt="Profile Picture" class="w-16 h-16 object-cover rounded-full">
+                            <div>
+                                 <p class="text-xl font-semibold text-gray-800">${user.name}</p>
+                                  <p class="text-sm text-gray-600">Insta Id :- ${user.InstaId}</p>
+                                 <p class="text-sm text-gray-600">${user.email}</p>
+
+                            </div>
+                        </div>
+                        <button type="submit" name="selected_user" value="${user._id}"
+                                class="bg-blue-700 text-white py-2 px-4 rounded-md hover:bg-blue-800 focus:outline-none focus:ring focus:border-blue-300">
+                            Select
+                        </button>
+                    `;
+                    userList.appendChild(listItem);
+                });
+            }
         });
-    }
-});
-
     </script>
-    
 
 </body>
 
