@@ -624,11 +624,16 @@ def login():
             user = User()
             user.id = str(user_data['_id'])
             login_user(user)
-            return redirect(url_for('select_preferences'))
+            return redirect(url_for('timer'))
         else:
             return "Invalid email or password. Please try again."
 
-    return render_template('login.html')
+    return redirect(url_for('timer'))
+
+@app.route('/timer')
+def timer():
+        return render_template('wait_till.html')
+
 
 @app.route('/logout')
 @login_required
