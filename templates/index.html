@@ -6,14 +6,11 @@
 
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Puppy Match</title>
 </head>
 
 <body>
-    <!-- <div style="padding: 20px; text-align: center; font-size: x-large;">
-        <img src="{{ url_for('static', filename='kjsieit-logo.svg') }}" style="padding: 1px;" height="150px" width="150px"
-          alt="" />
-      </div> -->
+  
 
     <section class="flex items-center py-2 bg-stone-100 xl:h-screen font-poppins dark:bg-gray-800 ">
         <div class="justify-center flex-1 max-w-6xl  mx-auto lg:py-6 md:px-6">
@@ -53,6 +50,9 @@
                         <a href="{{ url_for('work') }}"
                         class="px-4 py-3 text-gray-50 transition-all transform bg-blue-500	font-bold rounded-xl hover:bg-blue-900	 dark:hover:text-gray-100 dark:text-gray-100 ">
 How It Works                  </a>
+<a href="{{ url_for('comment') }}"
+class="px-4 py-3 text-gray-50 transition-all transform bg-yellow-900	font-bold rounded-xl hover:bg-yellow-900	 dark:hover:text-gray-100 dark:text-gray-100 ">
+Comments                 </a>
                     </div>
                 </div>
 

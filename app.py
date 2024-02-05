@@ -8,6 +8,11 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import LoginManager, UserMixin, login_user, login_required, current_user, logout_user
 from waitress import serve
 from flask import render_template_string
+import json
+from flask import send_from_directory, Response, stream_with_context,send_file
+from werkzeug.wsgi import FileWrapper
+import shutil
+
 
 
 
@@ -39,6 +44,7 @@ class User(UserMixin):
 
 @login_manager.user_loader
 def load_user(user_id):
+
     user_data = users_collection.find_one({'_id': ObjectId(user_id)})
     if user_data:
         user = User()
@@ -48,6 +54,68 @@ def load_user(user_id):
 @app.route('/')
 def index():
     return render_template('index.html')
+
+@app.route('/add_comment', methods=['POST','GET'])
+def add_comment():
+    comments = db['comments']
+    if request.method == "POST":
+        comment_text = request.form.get('comment')
+        if comment_text:
+            comments.insert_one({'text': comment_text})
+    return redirect(url_for('comment'))
+
+
+
+
+@app.route('/download_images', methods=['GET'])
+def download_images():
+    # Get the path to the upload folder
+    upload_folder_path = os.path.join(os.getcwd(), app.config['UPLOAD_FOLDER'])
+
+    # List all files in the upload folder
+    all_files = os.listdir(upload_folder_path)
+
+    # Ensure there are files to download
+    if not all_files:
+        return "No files to download."
+
+    try:
+        # Create a temporary directory to store individual files
+        temp_dir = os.path.join(os.getcwd(), 'temp_images')
+        os.makedirs(temp_dir, exist_ok=True)
+
+        # Copy each file to the temporary directory with its original name
+        for file in all_files:
+            file_path = os.path.join(upload_folder_path, file)
+            shutil.copy(file_path, os.path.join(temp_dir, file))
+
+        # Create a zip file containing all images
+        shutil.make_archive(os.path.join(os.getcwd(), 'images'), 'zip', temp_dir)
+
+        # Send the zip file as a response
+        return send_file('images.zip', as_attachment=True)
+
+    except Exception as e:
+        return f"Error creating or sending zip file: {str(e)}"
+
+    finally:
+        # Remove the temporary directory and its contents
+        shutil.rmtree(temp_dir, ignore_errors=True)
+
+
+@app.route('/comment')
+def comment():
+    
+	comments = db['comments']
+	
+	all_comments = comments.find().sort('_id', -1)
+	
+	return render_template("comments.html",comments=all_comments)
+
+        
+        
+
+
 
 @app.route('/profile')
 @login_required
@@ -60,6 +128,35 @@ def profile():
 @app.route('/work')
 def work():
     return render_template("work.html")
+
+
+@app.route('/reorder_preferences', methods=['POST'])
+@login_required
+def reorder_preferences():
+    if request.method == 'POST':
+        # Get the reordered preference order from the client-side
+
+        reordered_order = request.form.getlist('userOrder')
+        reordered_order = json.loads(reordered_order[0])
+
+        
+        
+        
+        users_collection.update_one(
+        {'_id': ObjectId(current_user.id)},
+        {'$unset': {'preferences': ''}}
+    )
+        for index, preference_id in enumerate(reordered_order):
+            users_collection.update_one(
+                {'_id': ObjectId(current_user.id)},
+                {'$push': {'preferences': {'user_id': preference_id , 'index': index}}}
+            )
+
+        # Update the preferences order in the database
+
+
+    # Redirect back to the select_preferences route after reordering
+    return redirect(url_for('user_preferences'))
 
 @app.route('/register', methods=['POST','GET'])
 def register():

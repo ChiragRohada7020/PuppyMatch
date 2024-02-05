@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anonymous Comments</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <style>
+        body {
+            padding: 20px;
+            background-color: #f8f9fa;
+            color: #343a40; /* Dark gray text color */
+        }
+        .container {
+            background-color: #ffffff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        form {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        h1, h2 {
+            color: #434442;
+        }
+        .list-group-item {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            margin-bottom: 8px;
+        }
+        img {
+            display: block;
+            margin: 0 auto;
+            max-width: 80%;
+            height: auto;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+        textarea {
+            resize: none;
+            border-radius: 8px;
+            color: #495057; /* Dark grayish text color */
+        }
+        button {
+            border-radius: 8px;
+            color: #ffffff; /* White text color */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="mt-4 text-center">Anonymous Comments</h1>
+        <img src="https://cdn4.vectorstock.com/i/1000x1000/95/53/anonymous-mascot-logo-design-vector-36429553.jpg" style="max-height: 300px; width: auto;" class="mx-auto d-block" alt="Anonymous Mascot">
+
+        <form action="{{ url_for('add_comment') }}" method="post">
+            <div class="form-group">
+                <br>
+                <textarea class="form-control" name="comment" id="comment" rows="4" placeholder="Type your comment here..."></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Add Comment</button>
+        </form>
+
+        <h2 class="text-center">Comments:</h2>
+        <ul class="list-group">
+            {% for comment in comments %}
+                <li class="list-group-item">{{ comment.text }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+</body>
+</html>
