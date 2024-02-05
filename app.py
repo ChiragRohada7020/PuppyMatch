@@ -626,7 +626,7 @@ def login():
             login_user(user)
             return redirect(url_for('timer'))
         else:
-            return "Invalid email or password. Please try again."
+            return render_template("error.html")
 
     return redirect(url_for('timer'))
 
