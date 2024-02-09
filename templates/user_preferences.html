@@ -123,12 +123,12 @@
                 <div id="{{preference._id}}" class="drag-item flex items-center gap-6 mb-4">
                     <img src="/static/uploads/{{preference.profile_picture}}" alt="Profile Picture" class="w-16 h-16 object-cover rounded-full">
                     <div>
-                        <p class="text-xl font-semibold text-gray-800 capitalize">{{preference.name}}</p>
+                        <p class="text-lg font-semibold text-gray-800 capitalize">{{preference.name}}</p>
                         <a href="https://www.instagram.com/{{preference.InstaId}}" class="text-sm text-gray-600">Insta Id: {{preference.InstaId}}</a>
                         <p class="text-sm text-gray-600">{{preference.email}}</p>
                     </div>
                     <button type="button" onclick="openModal('{{preference._id}}')"
-                            class="bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-600 focus:outline-none focus:ring focus:border-red-300">
+                            class="bg-red-500 text-white py-2 px-2 rounded-md hover:bg-red-600 focus:outline-none focus:ring focus:border-red-300">
                         Delete
                     </button>
                     <div class="move-buttons">
