@@ -1,4 +1,3 @@
-<!-- select_preferences.html -->
 <!DOCTYPE html>
 <html lang="en">
 
@@ -61,7 +60,7 @@
             padding: 20px;
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-            max-width: 400px;
+            max-width: 80%; /* Adjusted for better responsiveness */
             text-align: center;
         }
 
@@ -105,49 +104,45 @@
             <span class="text-xl font-bold"><span class="text-blue-500">P</span>uppy <span class="text-blue-500">M</span>atch</span>
             <div class="flex space-x-4">
                 <a href="{{ url_for('select_preferences') }}" class="nav-link hover:text-blue-300 ">Home</a>
-
                 <a href="{{ url_for('user_preferences') }}" class="nav-link hover:text-blue-300 border-b-2 border-yellow-300 ">Preferences</a>
                 <a href="{{ url_for('logout') }}" class="nav-link hover:text-blue-300 ">Logout</a>
             </div>
         </div>
     </nav>
 
-    <div class="bg-white p-6 rounded shadow-md mx-auto my-4 container">
+    <div class="bg-white p-6 rounded shadow-md mx-4 my-4 container"> <!-- Adjusted margin for better responsiveness -->
 
-        <h2 class="text-2xl font-semibold mb-6 text-gray-800 pt-5 pb-5">Peferences</h2>
+        <h2 class="text-2xl font-semibold mb-6 text-gray-800 pt-5 pb-5">Preferences</h2>
 
         <form method="post" action="{{ url_for('reorder_preferences') }}">
             <!-- Container for drag-and-drop items -->
-            <div id="userList" class="drag-container flex flex-col gap-10">
+            <div id="userList" class="drag-container flex flex-col gap-6">
                 {% for preference in preferences %}
-                <div id="{{preference._id}}" class="drag-item flex items-center gap-6 mb-4">
+                <div id="{{preference._id}}" class="drag-item flex flex-col gap-4">
                     <img src="/static/uploads/{{preference.profile_picture}}" alt="Profile Picture" class="w-16 h-16 object-cover rounded-full">
                     <div>
                         <p class="text-lg font-semibold text-gray-800 capitalize">{{preference.name}}</p>
                         <a href="https://www.instagram.com/{{preference.InstaId}}" class="text-sm text-gray-600">Insta Id: {{preference.InstaId}}</a>
                         <p class="text-sm text-gray-600">{{preference.email}}</p>
                     </div>
-                    <button type="button" onclick="openModal('{{preference._id}}')"
-                            class="bg-red-500 text-white py-2 px-2 rounded-md hover:bg-red-600 focus:outline-none focus:ring focus:border-red-300">
+                    <button type="button" onclick="openModal('{{preference._id}}')" class="bg-red-500 text-white py-2 px-2 rounded-md hover:bg-red-600 focus:outline-none focus:ring focus:border-red-300">
                         Delete
                     </button>
-                    <div class="move-buttons">
-                        <button type="button" onclick="moveItemUp(this)"
-                           ><img src="https://icons.veryicon.com/png/o/internet--web/industrial-icon/up-arrow.png" class="w-5 h-5" alt="">
+                    <div class="move-buttons flex gap-4">
+                        <button type="button" onclick="moveItemUp(this)">
+                            <img src="https://icons.veryicon.com/png/o/internet--web/industrial-icon/up-arrow.png" class="w-5 h-5" alt="">
                         </button>
-                        <br>
                         <button type="button" onclick="moveItemDown(this)">
                             <img src="https://www.inventicons.com/uploads/iconset/1174/wm/512/Arrow-arrow-bottom-down-download-svg-33.png" class="w-5 h-5" alt="">
                         </button>
-
                     </div>
                 </div>
                 {% endfor %}
             </div>
-    <input type="hidden" id="userOrder" name="userOrder" value="">
-    <button type="submit" class="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:ring focus:border-blue-300">
-        Save Order
-    </button>
+            <input type="hidden" id="userOrder" name="userOrder" value="">
+            <button type="submit" class="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:ring focus:border-blue-300">
+                Save Order
+            </button>
         </form>
     </div>
     <input type="hidden" id="deleteUserId" name="delete_user_id" value="">
@@ -171,63 +166,4 @@
 
         // Initialize Dragula
 
-        // Add an event listener for the 'drop' event to handle item reordering
-       
-
-        // Function to reorder items based on their current order
-        function reorderItems() {
-            // Get the new order of items
-            var newOrder = Array.from(container.children).map(function (item) {
-                return item.id;
-            });
-            document.getElementById('userOrder').value = JSON.stringify(newOrder);
-
-
-            // You can now send the new order to the backend or perform other actions
-            console.log('New Order:', newOrder);
-        }
-
-        function openModal(userId) {
-            console.log('User ID:', userId);
-            document.getElementById('deleteModal').style.display = 'flex';
-            // Store the userId in a hidden input field for form submission
-            document.getElementById('deleteUserId').value = userId;
-        }
-
-        function closeModal() {
-            document.getElementById('deleteModal').style.display = 'none';
-        }
-
-        function deleteUser() {
-            // Get the userId from the hidden input field
-            var userId = document.getElementById('deleteUserId').value;
-            // Update the form action to include the userId
-            document.querySelector('form').action = '/delete_user/' + userId;
-            // Submit the form
-            document.querySelector('form').submit();
-        }
-
-        // Function to move an item up in the list
-        function moveItemUp(button) {
-            var item = button.closest('.drag-item');
-            var prevItem = item.previousElementSibling;
-            if (prevItem) {
-                container.insertBefore(item, prevItem);
-                reorderItems();
-            }
-        }
-
-        // Function to move an item down in the list
-        function moveItemDown(button) {
-            var item = button.closest('.drag-item');
-            var nextItem = item.nextElementSibling;
-            if (nextItem) {
-                container.insertBefore(nextItem, item);
-                reorderItems();
-            }
-        }
-    </script>
-
-</body>
-
-</html>
+        // Add an event listener for the 'drop
