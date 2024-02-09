@@ -1,3 +1,4 @@
+<!-- select_preferences.html -->
 <!DOCTYPE html>
 <html lang="en">
 
@@ -11,10 +12,6 @@
     <style>
         body {
             font-family: 'Roboto', sans-serif;
-            background-color: #f3f4f6;
-            color: #1f2937;
-            margin: 0;
-            padding: 0;
         }
 
         .container {
@@ -23,8 +20,7 @@
         }
 
         nav {
-            background-color: #1a202c;
-            padding: 1rem;
+            background-color: #2d3748;
         }
 
         nav a {
@@ -36,74 +32,16 @@
             color: #ffffff;
         }
 
-        .main-content {
-            background-color: #ffffff;
-            padding: 2rem;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-            margin: 2rem 0;
-        }
-
-        .user-item {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 1.5rem;
-            padding-bottom: 1.5rem;
+        #userList li {
             border-bottom: 1px solid #e2e2e2;
         }
 
-        .user-item img {
-            width: 80px;
-            height: 80px;
-            object-fit: cover;
-            border-radius: 50%;
-            margin-right: 1rem;
-        }
-
-        .user-item-info {
-            flex-grow: 1;
-        }
-
-        .user-item-info p {
-            margin: 0;
-        }
-
-        .user-actions {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-end;
-        }
-
-        .user-actions button {
-            background-color: #e53e3e;
-            color: #ffffff;
-            padding: 0.5rem 1rem;
-            border-radius: 4px;
-            margin-top: 0.5rem;
-            cursor: pointer;
+        #userList button {
             transition: background-color 0.3s;
         }
 
-        .user-actions button:hover {
-            background-color: #c53030;
-        }
-
-        .move-buttons button {
-            background-color: #4299e1;
-            color: #ffffff;
-            padding: 0.5rem;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-
-        .move-buttons button + button {
-            margin-top: 0.5rem;
-        }
-
-        .move-buttons button:hover {
-            background-color: #3182ce;
+        #userList button:hover {
+            background-color: #4a4a4a;
         }
 
         .modal {
@@ -120,7 +58,7 @@
 
         .modal-content {
             background-color: white;
-            padding: 2rem;
+            padding: 20px;
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
             max-width: 400px;
@@ -130,57 +68,88 @@
         .modal-buttons {
             display: flex;
             justify-content: space-around;
-            margin-top: 2rem;
+            margin-top: 20px;
+        }
+
+        .drag-container {
+            cursor: grab;
+        }
+
+        .drag-item {
+            cursor: grab;
+            margin-bottom: 10px;
+            transition: background 0.3s;
+        }
+
+        .drag-item.dragging {
+            opacity: 0.5;
+        }
+
+        .drag-item.drag-over {
+            background-color: #f0f0f0;
+        }
+
+        .move-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
         }
     </style>
 </head>
 
-<body>
+<body class="bg-gray-200 text-black min-h-screen flex flex-col">
 
     <!-- Navigation Bar -->
-    <nav class="nav bg-gray-800 text-white">
+    <nav class="p-4 bg-gray-800 text-white">
         <div class="container flex items-center justify-between">
             <span class="text-xl font-bold"><span class="text-blue-500">P</span>uppy <span class="text-blue-500">M</span>atch</span>
             <div class="flex space-x-4">
-                <a href="{{ url_for('select_preferences') }}" class="nav-link hover:text-blue-300">Home</a>
-                <a href="{{ url_for('user_preferences') }}" class="nav-link hover:text-blue-300 border-b-2 border-yellow-300">Preferences</a>
-                <a href="{{ url_for('logout') }}" class="nav-link hover:text-blue-300">Logout</a>
+                <a href="{{ url_for('select_preferences') }}" class="nav-link hover:text-blue-300 ">Home</a>
+
+                <a href="{{ url_for('user_preferences') }}" class="nav-link hover:text-blue-300 border-b-2 border-yellow-300 ">Preferences</a>
+                <a href="{{ url_for('logout') }}" class="nav-link hover:text-blue-300 ">Logout</a>
             </div>
         </div>
     </nav>
 
-    <div class="main-content container">
+    <div class="bg-white p-6 rounded shadow-md mx-auto my-4 container">
 
-        <h2 class="text-2xl font-semibold mb-6 text-gray-800">Preferences</h2>
+        <h2 class="text-2xl font-semibold mb-6 text-gray-800 pt-5 pb-5">Peferences</h2>
 
         <form method="post" action="{{ url_for('reorder_preferences') }}">
             <!-- Container for drag-and-drop items -->
             <div id="userList" class="drag-container flex flex-col gap-10">
                 {% for preference in preferences %}
-                <div id="{{preference._id}}" class="user-item">
-                    <img src="/static/uploads/{{preference.profile_picture}}" alt="Profile Picture">
-                    <div class="user-item-info">
+                <div id="{{preference._id}}" class="drag-item flex items-center gap-6 mb-4">
+                    <img src="/static/uploads/{{preference.profile_picture}}" alt="Profile Picture" class="w-16 h-16 object-cover rounded-full">
+                    <div>
                         <p class="text-lg font-semibold text-gray-800 capitalize">{{preference.name}}</p>
-                        <p class="text-sm text-gray-600">Insta Id: <a href="https://www.instagram.com/{{preference.InstaId}}" class="text-blue-500">{{preference.InstaId}}</a></p>
+                        <a href="https://www.instagram.com/{{preference.InstaId}}" class="text-sm text-gray-600">Insta Id: {{preference.InstaId}}</a>
                         <p class="text-sm text-gray-600">{{preference.email}}</p>
                     </div>
-                    <div class="user-actions">
-                        <button type="button" onclick="openModal('{{preference._id}}')">Delete</button>
-                        <div class="move-buttons">
-                            <button type="button" onclick="moveItemUp(this)">Move Up</button>
-                            <button type="button" onclick="moveItemDown(this)">Move Down</button>
-                        </div>
+                    <button type="button" onclick="openModal('{{preference._id}}')"
+                            class="bg-red-500 text-white py-2 px-2 rounded-md hover:bg-red-600 focus:outline-none focus:ring focus:border-red-300">
+                        Delete
+                    </button>
+                    <div class="move-buttons">
+                        <button type="button" onclick="moveItemUp(this)"
+                           ><img src="https://icons.veryicon.com/png/o/internet--web/industrial-icon/up-arrow.png" class="w-5 h-5" alt="">
+                        </button>
+                        <br>
+                        <button type="button" onclick="moveItemDown(this)">
+                            <img src="https://www.inventicons.com/uploads/iconset/1174/wm/512/Arrow-arrow-bottom-down-download-svg-33.png" class="w-5 h-5" alt="">
+                        </button>
+
                     </div>
                 </div>
                 {% endfor %}
             </div>
-            <input type="hidden" id="userOrder" name="userOrder" value="">
-            <button type="submit" class="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:ring focus:border-blue-300">
-                Save Order
-            </button>
+    <input type="hidden" id="userOrder" name="userOrder" value="">
+    <button type="submit" class="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:ring focus:border-blue-300">
+        Save Order
+    </button>
         </form>
     </div>
-
     <input type="hidden" id="deleteUserId" name="delete_user_id" value="">
 
     <!-- Modal for Delete Confirmation -->
@@ -240,7 +209,7 @@
 
         // Function to move an item up in the list
         function moveItemUp(button) {
-            var item = button.closest('.user-item');
+            var item = button.closest('.drag-item');
             var prevItem = item.previousElementSibling;
             if (prevItem) {
                 container.insertBefore(item, prevItem);
@@ -250,7 +219,7 @@
 
         // Function to move an item down in the list
         function moveItemDown(button) {
-            var item = button.closest('.user-item');
+            var item = button.closest('.drag-item');
             var nextItem = item.nextElementSibling;
             if (nextItem) {
                 container.insertBefore(nextItem, item);
