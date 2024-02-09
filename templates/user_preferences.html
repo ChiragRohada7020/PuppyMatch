@@ -120,7 +120,7 @@
             <!-- Container for drag-and-drop items -->
             <div id="userList" class="drag-container flex flex-col gap-10">
                 {% for preference in preferences %}
-                <div class="flex flex-col gap-2">
+                <div>
                     <div id="{{preference._id}}" class="drag-item flex items-center gap-6 mb-4">
                         <img src="/static/uploads/{{preference.profile_picture}}" alt="Profile Picture" class="w-16 h-16 object-cover rounded-full">
                         <div>
@@ -128,23 +128,19 @@
                             <a href="https://www.instagram.com/{{preference.InstaId}}" class="text-sm text-gray-600">Insta Id: {{preference.InstaId}}</a>
                             <p class="text-sm text-gray-600">{{preference.email}}</p>
                         </div>
-                        
+                        <button type="button" onclick="openModal('{{preference._id}}')">
+                            <img src="/static/delete.png" class="w-5 h-5" alt="">
+                        </button>
                         <div class="move-buttons">
                             <button type="button" onclick="moveItemUp(this)"
-                               ><img src="/static/up_arrow.png" class="w-3 h-3" alt="">
+                               ><img src="/static/up_arrow.png" class="w-4 h-4" alt="">
                             </button>
-                            
+                            <br>
                             <button type="button" onclick="moveItemDown(this)">
-                                <img src="/static/down_arrow.png" class="w-3 h-3" alt="">
+                                <img src="/static/down_arrow.png" class="w-4 h-4" alt="">
                             </button>
     
                         </div>
-                    </div>
-                    <div class="w-full">
-                        <button type="button" onclick="openModal('{{preference._id}}')"
-                                class="bg-red-500 text-sm w-full text-white py-2 px-2 rounded-md hover:bg-red-600 focus:outline-none focus:ring focus:border-red-300">
-                            Delete
-                        </button>
                     </div>
                 </div>
                 {% endfor %}
