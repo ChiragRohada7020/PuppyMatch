@@ -119,7 +119,7 @@
         <form method="post" action="{{ url_for('reorder_preferences') }}">
             <!-- Container for drag-and-drop items -->
             <div id="userList" class="drag-container flex flex-col gap-10">
-                % for preference in preferences %}
+               { % for preference in preferences %}
 <div id="{{preference._id}}" class="drag-item flex items-center gap-6 mb-4">
     <img src="/static/uploads/{{preference.profile_picture}}" alt="Profile Picture" class="w-16 h-16 object-cover rounded-full">
     <div>
