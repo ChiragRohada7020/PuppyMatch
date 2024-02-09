@@ -32,18 +32,6 @@
             color: #ffffff;
         }
 
-        #userList li {
-            border-bottom: 1px solid #e2e2e2;
-        }
-
-        #userList button {
-            transition: background-color 0.3s;
-        }
-
-        #userList button:hover {
-            background-color: #4a4a4a;
-        }
-
         .modal {
             display: none;
             justify-content: center;
@@ -78,6 +66,9 @@
         .drag-item {
             cursor: grab;
             margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
             transition: background 0.3s;
         }
 
@@ -89,10 +80,23 @@
             background-color: #f0f0f0;
         }
 
-        .move-buttons {
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
+        .delete-button,
+        .move-buttons button {
+            background-color: transparent;
+            border: none;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .delete-button:hover,
+        .move-buttons button:hover {
+            transform: scale(1.2);
+        }
+
+        .delete-button img,
+        .move-buttons button img {
+            width: 20px;
+            height: 20px;
         }
     </style>
 </head>
@@ -114,7 +118,7 @@
 
     <div class="bg-white p-6 rounded shadow-md mx-auto my-4 container">
 
-        <h2 class="text-2xl font-semibold mb-6 text-gray-800 pt-5 pb-5">Peferences</h2>
+        <h2 class="text-2xl font-semibold mb-6 text-gray-800 pt-5 pb-5">Preferences</h2>
 
         <form method="post" action="{{ url_for('reorder_preferences') }}">
             <!-- Container for drag-and-drop items -->
@@ -127,25 +131,26 @@
                         <a href="https://www.instagram.com/{{preference.InstaId}}" class="text-sm text-gray-600">Insta Id: {{preference.InstaId}}</a>
                         <p class="text-sm text-gray-600">{{preference.email}}</p>
                     </div>
-                    <button type="button" onclick="openModal('{{preference._id}}')">
-                        <img src="/static/trash.png" class="w-10 h-10" alt="">                    </button>
-                    <div class="move-buttons">
-                        <button type="button" onclick="moveItemUp(this)"
-                           ><img src="/static/up_arrow.png" class="w-3 h-3" alt="">
+                    <div>
+                        <button type="button" onclick="openModal('{{preference._id}}')" class="delete-button">
+                            <img src="/static/delete.png" alt="Delete">
                         </button>
-                        <br>
-                        <button type="button" onclick="moveItemDown(this)">
-                            <img src="/static/down_arrow.png" class="w-3 h-3" alt="">
-                        </button>
-
+                        <div class="move-buttons">
+                            <button type="button" onclick="moveItemUp(this)">
+                                <img src="/static/up_arrow.png" alt="Move Up">
+                            </button>
+                            <button type="button" onclick="moveItemDown(this)">
+                                <img src="/static/down_arrow.png" alt="Move Down">
+                            </button>
+                        </div>
                     </div>
                 </div>
                 {% endfor %}
             </div>
-    <input type="hidden" id="userOrder" name="userOrder" value="">
-    <button type="submit" class="bg-blue-500 text-white mt-5 py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:ring focus:border-blue-300">
-        Save Order
-    </button>
+            <input type="hidden" id="userOrder" name="userOrder" value="">
+            <button type="submit" class="bg-blue-500 text-white mt-5 py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:ring focus:border-blue-300">
+                Save Order
+            </button>
         </form>
     </div>
     <input type="hidden" id="deleteUserId" name="delete_user_id" value="">
