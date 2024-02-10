@@ -624,11 +624,11 @@ def login():
             user = User()
             user.id = str(user_data['_id'])
             login_user(user)
-            return redirect(url_for('timer'))
+            return redirect(url_for('select_preferences'))
         else:
             return render_template("error.html")
 
-    return redirect(url_for('timer'))
+    return redirect(url_for('select_preferences'))
 
 @app.route('/timer')
 def timer():
