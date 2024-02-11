@@ -708,6 +708,8 @@ def update_profile():
             )
 
         flash('Profile updated successfully!', 'success')
+        return  redirect(url_for('update_profile'))
+
     data = users_collection.find_one({'_id': ObjectId(current_user.id)})
     profile_picture = data['profile_picture']
     name = data['name']
