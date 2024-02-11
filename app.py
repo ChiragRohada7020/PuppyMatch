@@ -715,7 +715,7 @@ def update_profile():
     
     if not os.path.exists(profile_picture_path):
         # If the file doesn't exist, use the default profile picture
-        profile_picture = 'default.jpg'
+        profile_picture = 'deafult.jpg'
 
 	
 	
