@@ -711,6 +711,11 @@ def update_profile():
     data = users_collection.find_one({'_id': ObjectId(current_user.id)})
     profile_picture = data['profile_picture']
     name = data['name']
+    profile_picture_path = os.path.join(app.config['UPLOAD_FOLDER'], profile_picture)
+    
+    if not os.path.exists(profile_picture_path):
+        # If the file doesn't exist, use the default profile picture
+        profile_picture = 'default_profile_picture.jpg'
 
 	
 	
