@@ -698,7 +698,7 @@ def update_profile():
         if new_profile_picture.filename != '':
             # Handle profile picture update
             _, file_extension = os.path.splitext(new_profile_picture.filename)
-            unique_filename = f"{email}_profile_picture{file_extension}"
+            unique_filename = f"{email}_profile_image{file_extension}"
             new_profile_picture.save(os.path.join(app.config['UPLOAD_FOLDER'], unique_filename))
 
             # Update profile picture filename in the database
