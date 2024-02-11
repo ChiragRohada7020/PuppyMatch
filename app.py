@@ -679,6 +679,43 @@ def select_preferences():
     return render_template('user_list.html', users=users, current_gender=gender)
 
 
+
+@app.route('/update_profile', methods=['POST',"GET"])
+@login_required
+def update_profile():
+    if request.method == 'POST':
+        new_name = request.form.get('name')
+        new_profile_picture = request.files['profile_picture']
+
+        # Update user data in the database
+        users_collection.update_one(
+            {'_id': ObjectId(current_user.id)},
+            {'$set': {'name': new_name}}
+        )
+        data = users_collection.find_one({'_id': ObjectId(current_user.id)})
+        email = data['email']  # Corrected this line
+
+        if new_profile_picture.filename != '':
+            # Handle profile picture update
+            _, file_extension = os.path.splitext(new_profile_picture.filename)
+            unique_filename = f"{email}_profile_picture{file_extension}"
+            new_profile_picture.save(os.path.join(app.config['UPLOAD_FOLDER'], unique_filename))
+
+            # Update profile picture filename in the database
+            users_collection.update_one(
+                {'_id': ObjectId(current_user.id)},
+                {'$set': {'profile_picture': unique_filename}}
+            )
+
+        flash('Profile updated successfully!', 'success')
+	data = users_collection.find_one({'_id': ObjectId(current_user.id)})
+    profile_picture = data['profile_picture']
+    return render_template("update_profile.html",profile_picture=profile_picture)
+
+
+
+
+
 @app.route('/delete_user/<user_id>', methods=['POST'])
 @login_required
 def delete_user(user_id):
