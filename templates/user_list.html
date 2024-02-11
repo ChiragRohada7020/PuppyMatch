@@ -18,6 +18,9 @@
             max-width: 800px;
             margin: 0 auto;
         }
+        .special-border {
+        border: 2px solid #FFD700; /* Set your desired border color for the special user */
+    }
 
         nav {
             background-color: #2d3748;
@@ -43,6 +46,7 @@
         #userList button:hover {
             background-color: #4a4a4a;
         }
+        
     </style>
 </head>
 
@@ -143,6 +147,9 @@
                 users.forEach(user => {
                     const listItem = document.createElement('li');
                     listItem.classList.add('mb-4', 'border-b', 'border-gray-300', 'py-4', 'flex', 'items-center', 'justify-between');
+                    if (user.email === "chirag.rohada@somaiya.edu") {
+                    listItem.classList.add('special-border');
+                        }
                     listItem.innerHTML = `
                         <div class="flex items-center gap-4">
                             <img src="/static/uploads/${user.profile_picture}" alt="Profile Picture" class="w-16 h-16 object-cover rounded-full">
