@@ -120,27 +120,34 @@
             <!-- Container for drag-and-drop items -->
             <div id="userList" class="drag-container flex flex-col gap-10">
                {% for preference in preferences %}
+             <!-- ... (your existing code) ... -->
+
 <div id="{{preference._id}}" class="drag-item flex items-center gap-6 mb-4">
     <img src="/static/uploads/{{preference.profile_picture}}" alt="Profile Picture" class="w-16 h-16 object-cover rounded-full">
-    <div>
-        <p class="text-lg font-semibold text-gray-800 capitalize">{{preference.name}}</p>
-        <a href="https://www.instagram.com/{{preference.InstaId}}" class="text-sm text-gray-600">Insta Id: {{preference.InstaId}}</a>
-        <p class="text-sm text-gray-600">{{preference.email}}</p>
+    
+    <div class="flex-grow">
+        <div>
+            <p class="text-lg font-semibold text-gray-800 capitalize">{{preference.name}}</p>
+            <a href="https://www.instagram.com/{{preference.InstaId}}" class="text-sm text-gray-600">Insta Id: {{preference.InstaId}}</a>
+            <p class="text-sm text-gray-600">{{preference.email}}</p>
+        </div>
+        
     </div>
 
-    <div class="flex-grow"></div> <!-- Add this to push buttons to the right -->
-
-    <div class="move-buttons">
+    <!-- Move-buttons div is now outside of the flex-grow div -->
+    <div class="move-buttons flex items-center">
         <button type="button" onclick="moveItemUp(this)">
             <img src="/static/up_arrow.png" class="w-5 h-5 font-bold ml-5" alt="">
         </button>
-        <button onclick="openModal('{{preference._id}}')" type="button" class="mt-2 mb-2 text-white bg-red-700 hover:bg-red-800 focus:outline-none focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-2.5 py-2.5 text-center me-2  dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900">Delete</button>
-
+        <button onclick="openModal('{{preference._id}}')" type="button" class="mt-2 mb-2 text-white bg-red-700 hover:bg-red-800 focus:outline-none focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-2.5 py-2.5 text-center me-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900">Delete</button>
         <button type="button" onclick="moveItemDown(this)">
             <img src="/static/down_arrow.png" class="w-5 h-5 ml-5" alt="">
         </button>
     </div>
 </div>
+
+<!-- ... (your existing code) ... -->
+
 {% endfor %}
             </div>
     <input type="hidden" id="userOrder" name="userOrder" value="">

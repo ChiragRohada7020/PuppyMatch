@@ -628,7 +628,7 @@ def login():
         else:
             return render_template("error.html")
 
-    return redirect(url_for('select_preferences'))
+    return redirect(url_for('login'))
 
 @app.route('/timer')
 def timer():
@@ -708,9 +708,14 @@ def update_profile():
             )
 
         flash('Profile updated successfully!', 'success')
-	data = users_collection.find_one({'_id': ObjectId(current_user.id)})
+    data = users_collection.find_one({'_id': ObjectId(current_user.id)})
     profile_picture = data['profile_picture']
-    return render_template("update_profile.html",profile_picture=profile_picture)
+    name = data['name']
+
+	
+	
+	
+    return render_template("update_profile.html",profile_picture=profile_picture,name=name)
 
 
 
