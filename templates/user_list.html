@@ -18,8 +18,8 @@
             max-width: 800px;
             margin: 0 auto;
         }
-        .special-border {
-        border: 2px solid #FFD700; /* Set your desired border color for the special user */
+        .border-chirag {
+        border: 4px solid #FFD700; /* Set your desired border color for chirag@example.com */
     }
 
         nav {
@@ -147,13 +147,12 @@
                 users.forEach(user => {
                     const listItem = document.createElement('li');
                     listItem.classList.add('mb-4', 'border-b', 'border-gray-300', 'py-4', 'flex', 'items-center', 'justify-between');
-                    if (user.email === "chirag.rohada@somaiya.edu") {
-                    listItem.classList.add('special-border');
-                        }
+                
                     listItem.innerHTML = `
                         <div class="flex items-center gap-4">
+                            <div class="user-profile ${user.email === 'chirag.rohada@somaiya.edu' ? 'border-chirag' : 'border-default'}">
                             <img src="/static/uploads/${user.profile_picture}" alt="Profile Picture" class="w-16 h-16 object-cover rounded-full">
-                            <div>
+                        </div>                            <div>
                                  <p class="text-xl font-semibold text-gray-800 capitalize">${user.name}</p>
                                  <a  href="https://www.instagram.com/${user.InstaId}" class="text-sm text-gray-600">Insta Id :- ${user.InstaId}</a>
                                  <p class="text-sm text-gray-600">${user.email}</p>
