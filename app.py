@@ -53,7 +53,7 @@ def load_user(user_id):
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return redirect(url_for('matching'))
 
 @app.route('/add_comment', methods=['POST','GET'])
 def add_comment():
@@ -817,10 +817,9 @@ def search_users():
 
 
 @app.route('/matching', methods=['GET'])
-@login_required
 def matching():
     # Get all users
-    all_users = users_collection.find()
+    all_users = users_collection.find({})
 
     # List to store perfect matches
     perfect_matches = []
@@ -838,6 +837,7 @@ def matching():
             'preferences.user_id': str(current_user_data['_id'])
         })
 
+
         # Iterate through potential matches
         for potential_match in potential_matches:
             potential_match_id = str(potential_match['_id'])
@@ -852,12 +852,11 @@ def matching():
                         'user_id': str(current_user_data['_id']),
                         'user_id2': potential_match_id,
                         'name': current_user_data['name'],
-                        'surname': current_user_data['surname'],
                         'matched_name': potential_match['name'],
-                        'matched_surname': potential_match['surname'],
                         'sum_of_indices': sum_of_indices
 
                     })
+
         perfect_matches = sorted(perfect_matches, key=lambda x: x['sum_of_indices'], reverse=True)
             # Create a set to keep track of users
         unique_users = set()
@@ -876,16 +875,15 @@ def matching():
                 unique_users.add(match['user_id'])
                 unique_users.add(match['user_id2'])
         
-        unmatched_users = [
-        {'user_id': str(user['_id']), 'name': user['name'], 'surname': user['surname']}
-        for user in all_users
-        if str(user['_id']) not in unique_users
-    ]
-        print(unmatched_users)
+    #     unmatched_users = [
+    #     {'user_id': str(user['_id']), 'name': user['name']}
+    #     for user in all_users
+    #     if str(user['_id']) not in unique_users
+    # ]
 
 
 
-    return render_template('matching.html', perfect_matches=unique_matches)
+    return render_template('matching.html',perfect_matches=unique_matches)
 
 
 

@@ -1,26 +1,86 @@
-<!-- perfect_matches.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Perfect Matches</title>
+    <title>Valentine Matches Congratulations</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: url('background.jpg') no-repeat center center fixed;
+            background-size: cover;
+            color: #fff;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            background-color: rgba(255, 218, 185, 0.9); /* Light Peach */
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+        }
+
+        h1 {
+            color: #e74c3c;
+        }
+
+        p {
+            font-size: 18px;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .heart {
+            color: #e74c3c;
+        }
+
+        .couple-names {
+            font-weight: bold;
+            color: #3498db;
+        }
+
+        .fa-heart {
+            color: #e74c3c;
+            font-size: 36px;
+            margin: 0 5px;
+        }
+
+        .gift-section {
+            background-color: #ffc0cb; /* Pink */
+            color: #6c757d; /* Steel Gray */
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+
+        .gift-text {
+            font-size: 16px;
+            margin: 10px 0;
+        }
+    </style>
 </head>
 <body>
-    <h2>Perfect Matches</h2>
-    {% if perfect_matches %}
-        <ul>
-            {% for match in perfect_matches %}
-                <li>
-                    {{ match.name }} {{ match.surname }} (User ID: {{ match.user_id }})
-                    <br>
-                    Perfectly Matched with {{ match.matched_name }} {{ match.matched_surname }} (User ID: {{ match.matched_user_id }})
-                </li>
-            {% endfor %}
-        </ul>
-    {% else %}
-        <p>No perfect matches found.</p>
-    {% endif %}
+    <div class="container">
+    
+        <h1>Congratulations!</h1>
+        {% if perfect_matches %}
+        {% for match in perfect_matches %}
+        <p>Great news! <span class="couple-names">{{ match.name }}</span> and <span class="couple-names"> {{ match.matched_name }} </span> got a match! <i class="fa fa-heart"></i></p>
+        {% endfor %}
+        
+        {% endif %}<p>Wishing you a day filled with love and happiness!</p>
+
+        <!-- Surprise Gift Section -->
+        <div class="gift-section">
+            <p><strong>Surprise Gift:</strong></p>
+            <p class="gift-text">As a token of our celebration, we have a <b>special surprise gift</b> for both of you!</p>
+            <p class="gift-text">Enjoy the love-filled moments and the surprise that awaits you!</p>
+        </div>
+    </div>
 </body>
 </html>
