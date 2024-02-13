@@ -819,61 +819,61 @@ def search_users():
 @app.route('/matching', methods=['GET'])
 def matching():
     # Get all users
-    all_users = users_collection.find({})
+    # all_users = users_collection.find({})
 
-    # List to store perfect matches
-    perfect_matches = []
+    # # List to store perfect matches
+    # perfect_matches = []
 
-    # Iterate through all users
-    for current_user_data in all_users:
-        current_user_preferences = current_user_data.get('preferences', [])
+    # # Iterate through all users
+    # for current_user_data in all_users:
+    #     current_user_preferences = current_user_data.get('preferences', [])
 
-        # Determine the opposite gender
-        opposite_gender = 'male' if current_user_data['gender'] == 'female' else 'female'
+    #     # Determine the opposite gender
+    #     opposite_gender = 'male' if current_user_data['gender'] == 'female' else 'female'
 
-        # Find potential matches of opposite gender
-        potential_matches = users_collection.find({
-            'gender': "female",
-            'preferences.user_id': str(current_user_data['_id'])
-        })
-
-
-        # Iterate through potential matches
-        for potential_match in potential_matches:
-            potential_match_id = str(potential_match['_id'])
-
-            # Check if the current user is present in the match's preferences
-            if any(potential_match_id == str(pref['user_id']) for pref in current_user_preferences):
-                # Check if the match also has the current user in their preferences
-                if any(str(current_user_data['_id']) == str(pref['user_id']) for pref in potential_match.get('preferences', [])):
-                    sum_of_indices = sum(pref['index'] for pref in current_user_preferences if pref['user_id'] == potential_match_id)
-
-                    perfect_matches.append({
-                        'user_id': str(current_user_data['_id']),
-                        'user_id2': potential_match_id,
-                        'name': current_user_data['name'],
-                        'matched_name': potential_match['name'],
-                        'sum_of_indices': sum_of_indices
-
-                    })
-
-        perfect_matches = sorted(perfect_matches, key=lambda x: x['sum_of_indices'], reverse=True)
-            # Create a set to keep track of users
-        unique_users = set()
-
-    # List to store final unique matches
-        unique_matches = []
+    #     # Find potential matches of opposite gender
+    #     potential_matches = users_collection.find({
+    #         'gender': "female",
+    #         'preferences.user_id': str(current_user_data['_id'])
+    #     })
 
 
+    #     # Iterate through potential matches
+    #     for potential_match in potential_matches:
+    #         potential_match_id = str(potential_match['_id'])
 
-        for match in perfect_matches:
-            if match['user_id'] not in unique_users and match['user_id2'] not in unique_users:
-            # If both users are not in the set, add the match to the final list
-                unique_matches.append(match)
+    #         # Check if the current user is present in the match's preferences
+    #         if any(potential_match_id == str(pref['user_id']) for pref in current_user_preferences):
+    #             # Check if the match also has the current user in their preferences
+    #             if any(str(current_user_data['_id']) == str(pref['user_id']) for pref in potential_match.get('preferences', [])):
+    #                 sum_of_indices = sum(pref['index'] for pref in current_user_preferences if pref['user_id'] == potential_match_id)
 
-            # Add both users to the set
-                unique_users.add(match['user_id'])
-                unique_users.add(match['user_id2'])
+    #                 perfect_matches.append({
+    #                     'user_id': str(current_user_data['_id']),
+    #                     'user_id2': potential_match_id,
+    #                     'name': current_user_data['name'],
+    #                     'matched_name': potential_match['name'],
+    #                     'sum_of_indices': sum_of_indices
+
+    #                 })
+
+    #     perfect_matches = sorted(perfect_matches, key=lambda x: x['sum_of_indices'], reverse=True)
+    #         # Create a set to keep track of users
+    #     unique_users = set()
+
+    # # List to store final unique matches
+    #     unique_matches = []
+
+
+
+    #     for match in perfect_matches:
+    #         if match['user_id'] not in unique_users and match['user_id2'] not in unique_users:
+    #         # If both users are not in the set, add the match to the final list
+    #             unique_matches.append(match)
+
+    #         # Add both users to the set
+    #             unique_users.add(match['user_id'])
+    #             unique_users.add(match['user_id2'])
         
     #     unmatched_users = [
     #     {'user_id': str(user['_id']), 'name': user['name']}
@@ -883,7 +883,7 @@ def matching():
 
 
 
-    return render_template('matching.html',perfect_matches=unique_matches)
+    return render_template('matching.html')
 
 
 
