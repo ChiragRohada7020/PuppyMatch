@@ -53,7 +53,7 @@ def load_user(user_id):
 
 @app.route('/')
 def index():
-    return redirect(url_for('matching'))
+    return render_template("index.html")
 
 @app.route('/add_comment', methods=['POST','GET'])
 def add_comment():
